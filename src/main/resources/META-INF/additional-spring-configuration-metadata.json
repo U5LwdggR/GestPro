@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "secret_key",
+      "type": "java.lang.String",
+      "description": "cle permettant la generation du token des utilisateurs"
+    }
+  ]
+}
