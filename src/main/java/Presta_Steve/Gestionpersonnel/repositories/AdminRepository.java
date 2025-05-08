@@ -4,9 +4,11 @@ package Presta_Steve.Gestionpersonnel.repositories;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import Presta_Steve.Gestionpersonnel.entities.Admin;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 
-public interface AdminRepository extends CrudRepository<Admin, Integer> {
-    Optional<Admin> findByEmailAd(String emailAd);
+@Repository
+public interface AdminRepository extends CrudRepository<Utilisateur, Integer> {
+    Optional<Utilisateur> findByEmailSup(String emailAd);
 }

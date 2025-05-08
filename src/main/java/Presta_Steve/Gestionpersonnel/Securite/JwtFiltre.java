@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import Presta_Steve.Gestionpersonnel.entities.SuperAdmin;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.ISuperAdminService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,7 +44,7 @@ public class JwtFiltre extends OncePerRequestFilter {
   }
     
     if (!isTokenExpired && nomUtilisateur != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      SuperAdmin userDetails = this.superAdminService.loadUserByUsername(nomUtilisateur);
+      Utilisateur userDetails = this.superAdminService.loadUserByUsername(nomUtilisateur);
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
   }

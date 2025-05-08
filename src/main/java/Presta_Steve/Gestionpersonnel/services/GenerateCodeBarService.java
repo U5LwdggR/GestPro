@@ -142,7 +142,7 @@ public class GenerateCodeBarService {
     }
 
 
-      // Méthode pour chiffrer un ID avec le chiffrement de César
+    // Méthode pour chiffrer un ID avec le chiffrement de César
     public int chiffrerIdCesar(int id) {
         String strId = Integer.toString(id); // Convertir l'ID en chaîne
         StringBuilder resultat = new StringBuilder();
@@ -151,6 +151,21 @@ public class GenerateCodeBarService {
             int chiffre = Character.getNumericValue(c); // Convertir le caractère en chiffre
             int chiffreChiffre = (chiffre + 3) % 10; // Appliquer le décalage
             resultat.append(chiffreChiffre); // Ajouter au résultat
+        }
+
+        return Integer.parseInt(resultat.toString()); // Convertir en entier
+    }
+
+
+    // Déchiffrer l'id chiffré avec l'algorithme de César (k = 3)
+    public int dechiffrerIdCesar(int code) {
+        String strN = Integer.toString(code); // Convertir le nombre en chaîne
+        StringBuilder resultat = new StringBuilder();
+
+        for (char c : strN.toCharArray()) {
+            int chiffre = Character.getNumericValue(c); // Convertir le caractère en chiffre
+            int chiffreDechiffre = (chiffre - 3 + 10) % 10; // Déchiffrer avec k = 3
+            resultat.append(chiffreDechiffre); // Ajouter au résultat
         }
 
         return Integer.parseInt(resultat.toString()); // Convertir en entier

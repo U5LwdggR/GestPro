@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Presta_Steve.Gestionpersonnel.Securite.JwtService;
 import Presta_Steve.Gestionpersonnel.data.AuthentificationDTO;
-import Presta_Steve.Gestionpersonnel.entities.Admin;
 import Presta_Steve.Gestionpersonnel.entities.Poste;
 import Presta_Steve.Gestionpersonnel.entities.Prime;
 import Presta_Steve.Gestionpersonnel.entities.Sanction;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.IAdminService;
 import Presta_Steve.Gestionpersonnel.interfaces.IPosteService;
 import Presta_Steve.Gestionpersonnel.interfaces.IPrimeService;
@@ -42,7 +42,7 @@ public class AdminController {
     private final JwtService jwtService;
 
       @PostMapping(path = "inscription")
-      public ResponseEntity<?> ajouterAdmin(@RequestBody Admin admin) {
+      public ResponseEntity<?> ajouterAdmin(@RequestBody Utilisateur admin) {
         try {
           //Enregistrement
           this.adminService.ajouterAdmin(admin); 

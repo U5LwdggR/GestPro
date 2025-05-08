@@ -2,18 +2,19 @@ package Presta_Steve.Gestionpersonnel.entities;
 
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.time.LocalDate;
 import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 
@@ -30,6 +31,8 @@ public class Presence {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codePre")
     private int codePre;
+    @Column(name = "idPer")
+    private int idPer;
     @Column(name = "heureArrive")
     private LocalTime heureArrive;
     @Column(name = "heureDepart")
@@ -37,11 +40,10 @@ public class Presence {
     @Column(name = "periode")
     private LocalDate periode;
     @Column(name = "heureStandard")
-    private LocalTime heureStandard;
+    private LocalTime heureStandard = LocalTime.parse("09:00:00");
     @Column(name = "enRetard")
     private Boolean enRetard;
-    @Column(name = "idPer", nullable = true)
-    private int idPer;
+
 
 
 }

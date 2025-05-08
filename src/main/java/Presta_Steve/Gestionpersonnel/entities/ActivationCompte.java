@@ -36,7 +36,5 @@ public class ActivationCompte {
   private String code;
   @Column(name = "idSup", nullable = true)
   private Integer idSuperAdmin;
-  @Column(name = "idAd", nullable = true)
-  private Integer idAdmin;
 
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import Presta_Steve.Gestionpersonnel.entities.MembrePersonnel;
 import Presta_Steve.Gestionpersonnel.entities.Poste;
 import Presta_Steve.Gestionpersonnel.entities.Services;
-import Presta_Steve.Gestionpersonnel.entities.SuperAdmin;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.IMembrePersonnelService;
 import Presta_Steve.Gestionpersonnel.repositories.MembrePersonnelRepository;
 import Presta_Steve.Gestionpersonnel.repositories.PosteRepository;
@@ -35,7 +35,7 @@ public class MembrePersonnelService implements IMembrePersonnelService {
   }
 
   //enregistrer l'id de l'admin ou du super admin
-    SuperAdmin idAdmin = (SuperAdmin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Utilisateur idAdmin = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     membrePersonnel.setIdSup(idAdmin.getIdSup());
 
     Services infosService = this.servicesRepository.findById(membrePersonnel.getIdSer()).orElseThrow(() -> new RuntimeException("ce service n'existe pas "));
@@ -81,27 +81,6 @@ public class MembrePersonnelService implements IMembrePersonnelService {
     List<MembrePersonnel> listeMembrePersonnel = new java.util.ArrayList<>();
     personnel.forEach(listeMembrePersonnel::add);
     return listeMembrePersonnel;
-  }
-
-  //methode pour Scanner la carte d'un membre personnel
-
-  public void scannerCarteMembrePersonnel(int code) {
-    //dechiffrer l'id avant de faire la requette vers la base de donnee
-    String strN = Integer.toString(code); // Convertir le nombre en chaîne
-        StringBuilder resultat = new StringBuilder();
-
-        for (char c : strN.toCharArray()) {
-            int chiffre = Character.getNumericValue(c); // Convertir le caractère en chiffre
-            int chiffreChiffre = (chiffre + 5) % 10; // Appliquer le décalage
-            resultat.append(chiffreChiffre); // Ajouter au résultat
-        }
-
-        int id = Integer.parseInt(resultat.toString()); // Convertir en entier
-        //verification de l'existance d'un membre personnel avec l'id
-    MembrePersonnel membrePersonnel = Personnel_repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Membre personnel introuvable avec l'id: " + id));
-    // Logique pour scanner la carte du membre personnel
-    System.out.println("Carte scannée pour le membre personnel: " + membrePersonnel.getNomPer());
   }
 
 }

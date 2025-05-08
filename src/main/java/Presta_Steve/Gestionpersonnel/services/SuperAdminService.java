@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import Presta_Steve.Gestionpersonnel.entities.ActivationCompte;
 import Presta_Steve.Gestionpersonnel.entities.Role;
-import Presta_Steve.Gestionpersonnel.entities.SuperAdmin;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.ISuperAdminService;
 import Presta_Steve.Gestionpersonnel.repositories.RoleRepository;
 import Presta_Steve.Gestionpersonnel.repositories.SuperAdminRepository;
@@ -34,7 +34,7 @@ public class SuperAdminService implements ISuperAdminService,UserDetailsService 
 
 
     //methode pour l'enregistrement d'un super admin
-    public void EnregistrerSuperAdmin(SuperAdmin superAdmin) {
+    public void EnregistrerSuperAdmin(Utilisateur superAdmin) {
         //verifier si l'email contient @
         if (!superAdmin.getEmailSup().contains("@")) {
             throw new RuntimeException("votre email doit contenir '@'");
@@ -45,7 +45,7 @@ public class SuperAdminService implements ISuperAdminService,UserDetailsService 
         }
 
         //verifier si le super admin existe deja en fonction de son email
-        Optional<SuperAdmin> findSuperAdmin = this.superAdminRepository.findByEmailSup(superAdmin.getEmailSup());
+        Optional<Utilisateur> findSuperAdmin = this.superAdminRepository.findByEmailSup(superAdmin.getEmailSup());
 
         if (findSuperAdmin.isPresent()) {
             throw new RuntimeException("Veuillez choisir un autre email le compte semble deja exister");
@@ -61,16 +61,16 @@ public class SuperAdminService implements ISuperAdminService,UserDetailsService 
         superAdmin.setRole(roleExiste.getLibelle());
 
         //enregistrement du super admin
-        SuperAdmin superAdmin2 = this.superAdminRepository.save(superAdmin);
+        Utilisateur superAdmin2 = this.superAdminRepository.save(superAdmin);
         
         //enregistrement de l'activation du compte super admin
-        this.activationCompteService.enregistrerActivationCompteSuperAdmin(superAdmin2);
+        this.activationCompteService.enregistrerActivationCompte(superAdmin2);
     }
 
     //methode pour la verification de l'existance du super admin dans la bd
     public void connexionSuperAdmin(String emailSup, String mdpSup) {
         // Récupérer le SuperAdmin par email
-        Optional<SuperAdmin> findSuperAdmin = this.superAdminRepository.findByEmailSup(emailSup);
+        Optional<Utilisateur> findSuperAdmin = this.superAdminRepository.findByEmailSup(emailSup);
     
         // Vérifier si le SuperAdmin existe
         if (findSuperAdmin.isEmpty()) {
@@ -78,7 +78,7 @@ public class SuperAdminService implements ISuperAdminService,UserDetailsService 
         }
     
         // Comparer le mot de passe brut avec le mot de passe haché
-        SuperAdmin superAdmin = findSuperAdmin.get();
+        Utilisateur superAdmin = findSuperAdmin.get();
         if (!this.PasswordEncoder.matches(mdpSup, superAdmin.getMdpSup())) {
             throw new RuntimeException("Email ou mot de passe incorrect");
         }
@@ -90,15 +90,15 @@ public class SuperAdminService implements ISuperAdminService,UserDetailsService 
         throw new RuntimeException("le code a expiré");
     
     }
-    SuperAdmin SuperAdminActiver = this.superAdminRepository.findById(activationCompte.getIdSuperAdmin()).orElseThrow(() -> new RuntimeException("utilisateur inconnu"));
+    Utilisateur SuperAdminActiver = this.superAdminRepository.findById(activationCompte.getIdSuperAdmin()).orElseThrow(() -> new RuntimeException("utilisateur inconnu"));
     SuperAdminActiver.setActif(true);
     this.superAdminRepository.save(SuperAdminActiver);
 }
     //methode pour la recuperation d'un super admin par son id
     @Override
-    public SuperAdmin loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Utilisateur loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<SuperAdmin> chercherParEmail = this.superAdminRepository.findByEmailSup(username);
+        Optional<Utilisateur> chercherParEmail = this.superAdminRepository.findByEmailSup(username);
         if (chercherParEmail.isEmpty()) {
             throw new RuntimeException("Aucun utilisateur ne correspond a cette email");
         }

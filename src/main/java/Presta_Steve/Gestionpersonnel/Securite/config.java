@@ -42,6 +42,7 @@ public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Excepti
                             .requestMatchers(POST,"superadmin/activationCompte").permitAll()
                             .requestMatchers(POST,"admin/connexion").permitAll()
                             .requestMatchers(POST,"admin/activationCompte").permitAll()
+                            .requestMatchers(POST,"presence/marquerPresence").permitAll()
                             .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->

@@ -23,7 +23,7 @@ import Presta_Steve.Gestionpersonnel.data.AuthentificationDTO;
 import Presta_Steve.Gestionpersonnel.entities.Poste;
 import Presta_Steve.Gestionpersonnel.entities.Prime;
 import Presta_Steve.Gestionpersonnel.entities.Sanction;
-import Presta_Steve.Gestionpersonnel.entities.SuperAdmin;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.IPosteService;
 import Presta_Steve.Gestionpersonnel.interfaces.IPrimeService;
 import Presta_Steve.Gestionpersonnel.interfaces.ISanctionService;
@@ -47,7 +47,7 @@ public class SuperAdminController {
 
 //methode pour l'enregistrement d'un superAdmin
 @PostMapping(path = "inscription")
-public ResponseEntity<?> saveSuperAdmin(@RequestBody SuperAdmin superAdmin){
+public ResponseEntity<?> saveSuperAdmin(@RequestBody Utilisateur superAdmin){
   try
   {
     superAdminService.EnregistrerSuperAdmin(superAdmin);

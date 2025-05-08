@@ -4,18 +4,16 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Presta_Steve.Gestionpersonnel.entities.ActivationCompte;
-import Presta_Steve.Gestionpersonnel.entities.Admin;
-import Presta_Steve.Gestionpersonnel.entities.SuperAdmin;
+import Presta_Steve.Gestionpersonnel.entities.Role;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.IAdminService;
 import Presta_Steve.Gestionpersonnel.repositories.AdminRepository;
+import Presta_Steve.Gestionpersonnel.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
-
 
 @AllArgsConstructor
 @Service
@@ -24,43 +22,52 @@ public class AdminService implements IAdminService {
     private final AdminRepository adminRepository;
     private BCryptPasswordEncoder PasswordEncoder;
     private final ActivationCompteService activationCompteService;
+    private final RoleRepository roleRepository;
     
     //private final TokenService tokenService;
 
 
-    public void ajouterAdmin(Admin admin) {
+    public void ajouterAdmin(Utilisateur admin) {
 
 
     //verifier si l'email contient @
-        if (!admin.getEmailAd().contains("@")) {
+        if (!admin.getEmailSup().contains("@")) {
             throw new RuntimeException("votre email doit contenir '@'");
         }
         // ensuite verifier si l'email contient .
-        if (!admin.getEmailAd().contains(".")) {
+        if (!admin.getEmailSup().contains(".")) {
             throw new RuntimeException("votre email doit contenir '.'");
         }
         //verifier si le super admin existe deja en fonction de son email
-        Optional<Admin> findAdmin = this.adminRepository.findByEmailAd(admin.getEmailAd());
+        Optional<Utilisateur> findAdmin = this.adminRepository.findByEmailSup(admin.getEmailSup());
         if (findAdmin.isPresent()) {
             throw new RuntimeException("Veuillez choisir un autre email le compte semble deja exister");
         }
         
-        //cryptage du mot de passe du super admin
-        admin.setMdpAd(this.PasswordEncoder.encode(admin.getMdpAd()));
-        SuperAdmin idAdmin = (SuperAdmin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        admin.setIdSup(idAdmin.getIdSup());
+        //cryptage du mot de passe de l'admin
+        admin.setMdpSup(this.PasswordEncoder.encode(admin.getMdpSup()));
+        
+        // Utilisateur idAdmin = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // admin.setIdSup(idAdmin.getIdSup());
+
+        //j'associe le role a  parce que je sais que le role "SUPER_ADMIN" a pour id 1 dans la bd
+        Role roleExiste = this.roleRepository.findById(2);
+        if (roleExiste == null) {
+            throw new RuntimeException("le role n'existe pas");
+        }
+        admin.setRole(roleExiste.getLibelle());
 
         //enregistrement du super admin
-        Admin admin2 = this.adminRepository.save(admin);
+        Utilisateur admin2 = this.adminRepository.save(admin);
         
         //enregistrement de l'activation du compte super admin
-        this.activationCompteService.enregistrerActivationCompteAdmin(admin2);
+        this.activationCompteService.enregistrerActivationCompte(admin2);
     }
 
 
     public void connexionAdmin(String emailAd, String mdpAd) {
             // Récupérer l'Admin par email
-        Optional<Admin> findAdmin = this.adminRepository.findByEmailAd(emailAd);
+        Optional<Utilisateur> findAdmin = this.adminRepository.findByEmailSup(emailAd);
     
         // Vérifier si l'Admin existe
         if (findAdmin.isEmpty()) {
@@ -68,8 +75,8 @@ public class AdminService implements IAdminService {
         }
     
         // Comparer le mot de passe brut avec le mot de passe haché
-        Admin Admin = findAdmin.get();
-        if (!this.PasswordEncoder.matches(mdpAd, Admin.getMdpAd())) {
+        Utilisateur Admin = findAdmin.get();
+        if (!this.PasswordEncoder.matches(mdpAd, Admin.getMdpSup())) {
             throw new RuntimeException("Email ou mot de passe incorrect");
         }
 }
@@ -82,19 +89,8 @@ public class AdminService implements IAdminService {
         throw new RuntimeException("le code a expiré");
     
     }
-    Admin AdminActiver = this.adminRepository.findById(activationCompte.getIdAdmin()).orElseThrow(() -> new RuntimeException("utilisateur inconnu"));
+    Utilisateur AdminActiver = this.adminRepository.findById(activationCompte.getIdSuperAdmin()).orElseThrow(() -> new RuntimeException("utilisateur inconnu"));
     AdminActiver.setActif(true);
     this.adminRepository.save(AdminActiver);
 }
-    //methode pour la recuperation d'un super admin par son id
-    @Override
-    public Admin loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        Optional<Admin> chercherParEmail = this.adminRepository.findByEmailAd(username);
-        if (chercherParEmail.isEmpty()) {
-            throw new RuntimeException("Aucun utilisateur ne correspond a cette email");
-        }
-        return chercherParEmail.get();
-    }
-    
 }

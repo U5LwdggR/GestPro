@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
-import Presta_Steve.Gestionpersonnel.entities.SuperAdmin;
+import Presta_Steve.Gestionpersonnel.entities.Utilisateur;
 import Presta_Steve.Gestionpersonnel.interfaces.ISuperAdminService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,7 +28,7 @@ public class JwtService {
     this.superAdminService = superAdminService;
   }
 
-  public Map<String, String> generateJwt(SuperAdmin superAdmin) {
+  public Map<String, String> generateJwt(Utilisateur utilisateur) {
     // Date de création et d'expiration du token
     final long heureActuelle = System.currentTimeMillis();
     final long heureExpiration = heureActuelle + 30 * 60 * 1000; // 30 minutes
@@ -37,8 +37,9 @@ public class JwtService {
     final String bearer = Jwts.builder()
         .setIssuedAt(new Date(heureActuelle))
         .setExpiration(new Date(heureExpiration))
-        .setSubject(superAdmin.getEmailSup()) // Claim standard "sub"
-        .claim("nom", superAdmin.getNomSup()) // Claim personnalisé
+        .setSubject(utilisateur.getEmailSup()) // Claim standard "sub"
+        .claim("nom", utilisateur.getNomSup()) // Claim personnalisé
+        .claim("role", utilisateur.getRole())
         .signWith(getKey(), SignatureAlgorithm.HS256)
         .compact();
 
@@ -49,8 +50,8 @@ public class JwtService {
 
 
   public Map<String,String> generate(String email) {
-    SuperAdmin superAdmin = this.superAdminService.loadUserByUsername(email);
-    return this.generateJwt(superAdmin);
+    Utilisateur utilisateur = this.superAdminService.loadUserByUsername(email);
+    return this.generateJwt(utilisateur);
   }
 
   private Key getKey() {

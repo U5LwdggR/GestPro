@@ -25,5 +25,4 @@ public class Role {
     private int idR;
     @Column(name = "libelle")
     private String libelle;
-  
 }
