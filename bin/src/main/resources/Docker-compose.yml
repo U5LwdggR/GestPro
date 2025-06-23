@@ -1,0 +1,18 @@
+version: "2.1"
+
+services:
+  db:
+    container_name: mysql
+    image: mysql:9.2.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: epreuve
+    ports:
+      - 3303:3306
+
+  adminer:
+    container_name: adminer-server
+    image: adminer:4.8.0-standalone
+    restart: always
+    ports:
+      - 9090:8080
